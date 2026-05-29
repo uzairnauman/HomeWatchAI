@@ -233,6 +233,10 @@ Atharva Mahamuni
 MS in Computer Science  
 AI & Full-Stack Developer
 
+Uzair Nauman
+MS (Data Science)
+BS (Accounting and Finance)
+
 ---
 
 ## 📜 License
