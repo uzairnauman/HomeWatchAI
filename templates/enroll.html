@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HomeWatch AI Pro - Enroll Face</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #0E1117;
+            color: #F0F0F0;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* ── Header (matches dashboard) ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header h2 { margin: 0; }
+        .btn-nav {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            margin-left: 10px;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-nav:hover { background: rgba(255,255,255,0.1); }
+
+        /* ── Layout grid (matches dashboard 2fr 1fr) ── */
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Cards (matches video-card / events-panel) ── */
+        .video-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .video-card img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+        }
+        .side-panel {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── Form elements (matches setup.html) ── */
+        .section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin: 0 0 12px 0;
+        }
+        input[type="text"] {
+            background: #1A1D24;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus { border-color: #6366F1; }
+        input[type="text"]::placeholder { color: #555; }
+
+        .btn {
+            background: #6366F1;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+            font-size: 15px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+        .btn:hover:not(:disabled) { background: #4F46E5; }
+        .btn:disabled { background: #2a2d35; color: #555; cursor: not-allowed; }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid #EF4444;
+            color: #EF4444;
+        }
+        .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,0.1); }
+
+        /* ── Progress bar ── */
+        .progress-track {
+            background: #1A1D24;
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #6366F1;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-fill.done { background: #10B981; }
+
+        /* ── Status message ── */
+        #status-msg {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 10px;
+            min-height: 18px;
+            line-height: 1.5;
+        }
+        #status-msg.ok   { color: #10B981; }
+        #status-msg.err  { color: #EF4444; }
+        #status-msg.warn { color: #F59E0B; }
+
+        /* ── Camera badge (matches dashboard badge style) ── */
+        .cam-badge {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            background: #10B981;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        .cam-badge.capturing {
+            background: #6366F1;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
+
+        /* ── Enrolled people list (matches event-item style) ── */
+        .person-item {
+            background: #1A1D24;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 4px solid #6366F1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .person-name { font-weight: 600; }
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: color 0.2s;
+        }
+        .btn-delete:hover { color: #EF4444; }
+
+        .empty-msg {
+            color: #555;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div style="max-width: 1400px; margin: 0 auto;">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>👤 Face Enrollment</h2>
+        <div>
+            <a class="btn-nav" href="/">⚙️ Settings</a>
+            <a class="btn-nav" href="/dashboard">🛡️ Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid">
+
+        <!-- Live camera feed -->
+        <div class="video-card">
+            <img src="/video_feed" alt="Live Feed">
+            <div class="cam-badge" id="cam-badge">● LIVE</div>
+        </div>
+
+        <!-- Side panel -->
+        <div class="side-panel">
+
+            <!-- Enroll form -->
+            <div>
+                <h3 class="section-label">New Enrollment</h3>
+                <input
+                    type="text"
+                    id="name-input"
+                    placeholder="Full name (e.g. Jane Doe)"
+                    maxlength="40"
+                />
+                <button class="btn" id="btn-start">▶ Start Capture</button>
+                <button class="btn btn-danger" id="btn-cancel" disabled>✕ Cancel</button>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div id="status-msg">Enter a name and press Start Capture.</div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Enrolled identities -->
+            <div style="flex: 1; min-height: 0;">
+                <h3 class="section-label">Enrolled Identities</h3>
+                <div id="people-list">
+                    <div class="empty-msg">No people enrolled yet.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const TARGET = 20;
+    let polling  = null;
+
+    const nameInput    = document.getElementById('name-input');
+    const btnStart     = document.getElementById('btn-start');
+    const btnCancel    = document.getElementById('btn-cancel');
+    const statusMsg    = document.getElementById('status-msg');
+    const progressFill = document.getElementById('progress-fill');
+    const camBadge     = document.getElementById('cam-badge');
+
+    function setStatus(msg, cls = '') {
+        statusMsg.textContent = msg;
+        statusMsg.className   = cls;
+    }
+
+    function setProgress(pct) {
+        progressFill.style.width = Math.min(pct, 100) + '%';
+        progressFill.className   = 'progress-fill' + (pct >= 100 ? ' done' : '');
+    }
+
+    function setCapturing(active) {
+        nameInput.disabled   = active;
+        btnStart.disabled    = active;
+        btnCancel.disabled   = !active;
+        camBadge.textContent = active ? '⬤ CAPTURING' : '● LIVE';
+        camBadge.className   = 'cam-badge' + (active ? ' capturing' : '');
+        if (!active) setProgress(0);
+    }
+
+    // ── Start ────────────────────────────────────────────────────────────────
+    btnStart.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (!name) {
+            setStatus('Please enter a name first.', 'err');
+            nameInput.focus();
+            return;
+        }
+
+        const res  = await fetch('/api/enroll/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (!res.ok) { setStatus(data.error, 'err'); return; }
+
+        setCapturing(true);
+        setStatus('Initializing — look at the camera…', 'warn');
+        startPolling();
+    });
+
+    // ── Cancel ───────────────────────────────────────────────────────────────
+    btnCancel.addEventListener('click', async () => {
+        await fetch('/api/enroll/cancel', { method: 'POST' });
+        stopPolling();
+        setCapturing(false);
+        setStatus('Cancelled.');
+    });
+
+    // Enter key triggers start
+    nameInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') btnStart.click();
+    });
+
+    // ── Poll status ───────────────────────────────────────────────────────────
+    function startPolling() {
+        stopPolling();
+        polling = setInterval(pollStatus, 300);
+    }
+    function stopPolling() {
+        clearInterval(polling);
+        polling = null;
+    }
+
+    async function pollStatus() {
+        let data;
+        try {
+            const res = await fetch('/api/enroll/status');
+            data = await res.json();
+        } catch { return; }
+
+        const pct = Math.round((data.collected / TARGET) * 100);
+        setProgress(pct);
+
+        const cls = data.status === 'done'     ? 'ok'
+                  : data.status === 'error'    ? 'err'
+                  : data.status === 'capturing'? 'warn'
+                  : '';
+        setStatus(data.message, cls);
+
+        if (data.status === 'done' || data.status === 'error') {
+            stopPolling();
+            setCapturing(false);
+            if (data.status === 'done') {
+                nameInput.value = '';
+                loadPeople();
+            }
+        }
+    }
+
+    // ── People list ───────────────────────────────────────────────────────────
+    async function loadPeople() {
+        const res  = await fetch('/api/enrolled_people');
+        const data = await res.json();
+        const list = document.getElementById('people-list');
+
+        if (!data.people.length) {
+            list.innerHTML = '<div class="empty-msg">No people enrolled yet.</div>';
+            return;
+        }
+
+        list.innerHTML = data.people.map(name => `
+            <div class="person-item">
+                <span class="person-name">👤 ${name}</span>
+                <button class="btn-delete" data-name="${name}">Remove</button>
+            </div>
+        `).join('');
+
+        list.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (!confirm(`Remove "${btn.dataset.name}" from the registry?`)) return;
+                await fetch('/api/enroll/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: btn.dataset.name })
+                });
+                loadPeople();
+            });
+        });
+    }
+
+    loadPeople();
+</script>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomeWatch_AI_ Surveillance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#071018;
+            --bg2:#0b1724;
+            --panel:rgba(12,20,34,.72);
+            --panel-strong:rgba(17,27,44,.9);
+            --border:rgba(255,255,255,.08);
+            --text:#eef6ff;
+            --muted:#9fb2c9;
+            --cyan:#61e7d9;
+            --blue:#7c9cff;
+            --green:#7ff0a8;
+            --shadow:0 24px 80px rgba(0,0,0,.35);
+        }
+
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            font-family:"Inter",sans-serif;
+            color:var(--text);
+            min-height:100vh;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(97,231,217,.12), transparent 25%),
+                radial-gradient(circle at 85% 10%, rgba(124,156,255,.16), transparent 30%),
+                linear-gradient(135deg,var(--bg),var(--bg2));
+        }
+
+        .page{
+            max-width:1400px;
+            margin:0 auto;
+            padding:32px 24px 40px;
+        }
+
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:20px;
+            margin-bottom:28px;
+        }
+
+        .brand-tag{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(97,231,217,.12);
+            border:1px solid rgba(97,231,217,.22);
+            color:#bffbf4;
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            margin-bottom:14px;
+        }
+
+        h1{
+            margin:0 0 10px 0;
+            font-size:42px;
+            line-height:1.05;
+            letter-spacing:-.04em;
+            font-weight:800;
+        }
+
+        .subtitle{
+            margin:0;
+            max-width:700px;
+            color:var(--muted);
+            font-size:15px;
+            line-height:1.7;
+        }
+
+        .status-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding:12px 16px;
+            border-radius:16px;
+            background:rgba(127,240,168,.13);
+            border:1px solid rgba(127,240,168,.22);
+            color:#d8ffe5;
+            font-weight:700;
+            white-space:nowrap;
+        }
+
+        .status-dot{
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            background:var(--green);
+            box-shadow:0 0 14px rgba(127,240,168,.9);
+        }
+
+        .hero{
+            display:grid;
+            grid-template-columns:1.05fr .95fr;
+            gap:24px;
+        }
+
+        .panel{
+            background:var(--panel);
+            border:1px solid var(--border);
+            border-radius:28px;
+            box-shadow:var(--shadow);
+            backdrop-filter:blur(18px);
+        }
+
+        .left-panel{
+            padding:30px;
+            min-height:720px;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        .eyebrow{
+            color:#c7fff8;
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:.12em;
+            text-transform:uppercase;
+            margin-bottom:14px;
+        }
+
+        .hero-headline{
+            margin:0 0 16px 0;
+            font-size:52px;
+            line-height:1.02;
+            letter-spacing:-.05em;
+            font-weight:800;
+            max-width:620px;
+        }
+
+        .hero-headline span{
+            color:#a8fff6;
+        }
+
+        .hero-copy{
+            margin:0 0 28px 0;
+            color:var(--muted);
+            max-width:580px;
+            line-height:1.8;
+            font-size:16px;
+        }
+
+        .feature-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+            margin-bottom:18px;
+        }
+
+        .feature{
+            padding:18px;
+            border-radius:20px;
+            background:rgba(255,255,255,.035);
+            border:1px solid rgba(255,255,255,.06);
+        }
+
+        .feature h3{
+            margin:0 0 8px 0;
+            font-size:15px;
+            font-weight:700;
+        }
+
+        .feature p{
+            margin:0;
+            color:var(--muted);
+            font-size:13px;
+            line-height:1.55;
+        }
+
+        .quick-stats{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:14px;
+            margin-top:10px;
+        }
+
+        .mini{
+            padding:18px;
+            border-radius:18px;
+            background:rgba(255,255,255,.035);
+            border:1px solid rgba(255,255,255,.06);
+        }
+
+        .mini .value{
+            font-size:26px;
+            font-weight:800;
+            margin-bottom:6px;
+        }
+
+        .mini .label{
+            color:var(--muted);
+            font-size:13px;
+        }
+
+        .right-panel{
+            padding:24px;
+            min-height:720px;
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            background:var(--panel-strong);
+        }
+
+        .control-card,
+        .preview-card{
+            border-radius:22px;
+            background:rgba(255,255,255,.04);
+            border:1px solid rgba(255,255,255,.06);
+            padding:20px;
+        }
+
+        .control-card h2,
+        .preview-card h2{
+            margin:0 0 8px 0;
+            font-size:28px;
+            font-weight:800;
+            letter-spacing:-.03em;
+        }
+
+        .control-card p,
+        .preview-card p{
+            margin:0 0 16px 0;
+            color:var(--muted);
+            font-size:14px;
+            line-height:1.65;
+        }
+
+        .camera-form{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+
+        .camera-form label{
+            font-size:13px;
+            font-weight:700;
+            color:#d8e6f8;
+        }
+
+        .camera-form input{
+            width:100%;
+            border:none;
+            outline:none;
+            border-radius:16px;
+            padding:16px 18px;
+            background:#060d17;
+            color:var(--text);
+            border:1px solid rgba(255,255,255,.08);
+            font-size:15px;
+        }
+
+        .camera-form input:focus{
+            border-color:rgba(97,231,217,.5);
+            box-shadow:0 0 0 4px rgba(97,231,217,.1);
+        }
+
+        .camera-form button,
+        .launch-btn{
+            border:none;
+            border-radius:16px;
+            padding:15px 18px;
+            font-size:15px;
+            font-weight:800;
+            cursor:pointer;
+            transition:.18s ease;
+        }
+
+        .camera-form button{
+            background:linear-gradient(135deg,#98ffe8,#a6bfff);
+            color:#08131d;
+            box-shadow:0 18px 40px rgba(124,156,255,.24);
+        }
+
+        .camera-form button:hover,
+        .launch-btn:hover{
+            transform:translateY(-1px);
+            opacity:.97;
+        }
+
+        .preview-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:14px;
+        }
+
+        .preview-header h2{
+            margin:0;
+            font-size:20px;
+        }
+
+        .pill{
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(124,156,255,.12);
+            border:1px solid rgba(124,156,255,.22);
+            color:#d3ddff;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .preview-frame{
+            position:relative;
+            overflow:hidden;
+            border-radius:20px;
+            min-height:360px;
+            background:#020813;
+            border:1px solid rgba(255,255,255,.08);
+        }
+
+        .preview-frame img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+        .preview-overlay{
+            position:absolute;
+            left:16px;
+            right:16px;
+            bottom:16px;
+            padding:14px 16px;
+            border-radius:16px;
+            background:linear-gradient(180deg, rgba(3,8,19,.08), rgba(3,8,19,.82));
+            border:1px solid rgba(255,255,255,.06);
+        }
+
+        .preview-overlay strong{
+            display:block;
+            margin-bottom:6px;
+            font-size:14px;
+        }
+
+        .preview-overlay span{
+            color:#c6d4e8;
+            font-size:12px;
+            line-height:1.5;
+        }
+
+        .launch-btn{
+            width:100%;
+            margin-top:16px;
+            background:linear-gradient(135deg,#d6ff83,#8af7a8);
+            color:#07131b;
+            box-shadow:0 18px 40px rgba(138,247,168,.2);
+        }
+
+        .note{
+            margin-top:12px;
+            text-align:center;
+            color:var(--muted);
+            font-size:12px;
+            line-height:1.6;
+        }
+
+        @media (max-width:1100px){
+            .hero{grid-template-columns:1fr}
+            .left-panel,.right-panel{min-height:auto}
+            .hero-headline{font-size:40px}
+        }
+
+        @media (max-width:720px){
+            .page{padding:22px 16px 32px}
+            .topbar{flex-direction:column;align-items:flex-start}
+            h1{font-size:32px}
+            .hero-headline{font-size:32px}
+            .feature-grid,.quick-stats{grid-template-columns:1fr}
+            .preview-frame{min-height:240px}
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <div>
+                <div class="brand-tag">AI Security Platform</div>
+                <h1>HomeWatch_AI_ Surveillance</h1>
+                <p class="subtitle">
+                    Premium live monitoring with real-time detection, face recognition, instant alerts,
+                    and event recording in one unified control experience.
+                </p>
+            </div>
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                Ready to Connect
+            </div>
+        </div>
+
+        <div class="hero">
+            <div class="panel left-panel">
+                <div>
+                    <div class="eyebrow">Launch smarter monitoring</div>
+                    <h2 class="hero-headline">
+                        Elegant <span>AI surveillance</span> for modern live scene awareness.
+                    </h2>
+                    <p class="hero-copy">
+                        Preview your camera, verify live visibility, and enter a command center built for
+                        smart alerts, known and unknown face recognition, event evidence, and continuous security monitoring.
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature">
+                            <h3>Live Detection</h3>
+                            <p>Continuous person and object monitoring with real-time overlay feedback.</p>
+                        </div>
+                        <div class="feature">
+                            <h3>Face Recognition</h3>
+                            <p>Recognize enrolled faces and classify unknown identities during events.</p>
+                        </div>
+                        <div class="feature">
+                            <h3>Instant Alerts</h3>
+                            <p>Push structured notifications with snapshots whenever the scene changes.</p>
+                        </div>
+                        <div class="feature">
+                            <h3>Evidence Capture</h3>
+                            <p>Automatically save event clips and snapshots for later review.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="mini">
+                        <div class="value">24/7</div>
+                        <div class="label">Continuous live monitoring</div>
+                    </div>
+                    <div class="mini">
+                        <div class="value">AI</div>
+                        <div class="label">Detection + recognition</div>
+                    </div>
+                    <div class="mini">
+                        <div class="value">Live</div>
+                        <div class="label">Preview before launch</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel right-panel">
+                <div class="control-card">
+                    <h2>Camera Source</h2>
+                    <p>
+                        Use <strong>webcam</strong> for your laptop camera or paste an IP stream URL if you want
+                        to switch sources. If you always use the same camera, you can leave this as-is.
+                    </p>
+
+                    <form class="camera-form" method="POST" action="/update_camera">
+                        <label for="camera_url">Optional source override</label>
+                        <input
+                            id="camera_url"
+                            name="camera_url"
+                            type="text"
+                            placeholder="webcam or http://192.168.x.x:8080/video"
+                            autocomplete="off"
+                        />
+                        <button type="submit">Update Camera Source</button>
+                    </form>
+                </div>
+
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <h2>Live Preview</h2>
+                        <span class="pill">Realtime Feed</span>
+                    </div>
+
+                    <div class="preview-frame">
+                        <img src="/video_feed" alt="Live Preview">
+                        <div class="preview-overlay">
+                            <strong>Preview active</strong>
+                            <span>Check framing, lighting, and visibility before opening the surveillance dashboard.</span>
+                        </div>
+                    </div>
+
+                    <button class="launch-btn" onclick="window.location.href='/dashboard'">
+                        Enter Surveillance Dashboard →
+                    </button>
+
+                    <div class="note">
+                        Keep the camera stable and faces well lit for better recognition and faster alerts.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
